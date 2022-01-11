@@ -18,6 +18,7 @@ import {
   ResponderProps,
   StrokeProps,
   TransformProps,
+  ProcessedDynamicColor,
 } from '../lib/extract/types';
 import extractResponder from '../lib/extract/extractResponder';
 import extractViewBox from '../lib/extract/extractViewBox';
@@ -183,7 +184,29 @@ export default class Svg extends Shape<
 
     extractResponder(props, props, this as ResponderInstanceProps);
 
-    const tint = extractColor(color);
+    let tint = extractColor(color);
+    if (typeof color === 'object' && color !== null) {
+      if ('dynamic' in color) {
+        let processedColor: ProcessedDynamicColor = {
+          dynamic: {
+            light: extractColor(color.dynamic.light) as number,
+            dark: extractColor(color.dynamic.dark) as number,
+          },
+        };
+        if (color.dynamic.highContrastLight) {
+          processedColor.dynamic.highContrastLight = extractColor(
+            color.dynamic.highContrastLight,
+          ) as number;
+        }
+        if (color.dynamic.highContrastDark) {
+          processedColor.dynamic.highContrastDark = extractColor(
+            color.dynamic.highContrastDark,
+          ) as number;
+        }
+        tint = processedColor;
+      }
+    }
+
     if (tint != null) {
       props.color = tint;
       props.tintColor = tint;
