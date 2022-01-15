@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import extractColor, { integerColor } from './extractColor';
 import { Color, ProcessedDynamicColor } from './types';
 
@@ -40,7 +41,15 @@ export default function extractBrush(color?: Color) {
     return int32ARGBColor;
   }
   if (typeof color === 'string') {
-    if (color.indexOf('semantic|') === 0) {
+    if (color.indexOf('platform|') === 0) {
+      return [
+        0,
+        Platform.select({
+          ios: { semantic: color.split('|').slice(1) },
+          android: { resource_paths: color.split('|').slice(1) },
+        }),
+      ];
+    } else if (color.indexOf('semantic|') === 0) {
       return [0, { semantic: color.split('|').slice(1) }];
     } else if (color.indexOf('resource_paths|') === 0) {
       return [0, { resource_paths: color.split('|').slice(1) }];
