@@ -8,7 +8,23 @@ export type NumberArray = NumberProp[] | NumberProp;
 export type rgbaArray = number[];
 // int32ARGBColor = 0xaarrggbb
 export type Int32ARGBColor = number;
-export type Color = Int32ARGBColor | rgbaArray | string;
+export type Color = Int32ARGBColor | rgbaArray | string | DynamicColor;
+export type DynamicColor = {
+  dynamic: {
+    light: Color;
+    dark: Color;
+    highContrastLight?: Color;
+    highContrastDark?: Color;
+  };
+};
+export type ProcessedDynamicColor = {
+  dynamic: {
+    light: Int32ARGBColor;
+    dark: Int32ARGBColor;
+    highContrastLight?: Int32ARGBColor;
+    highContrastDark?: Int32ARGBColor;
+  };
+};
 
 export type Linecap = 'butt' | 'square' | 'round';
 export type Linejoin = 'miter' | 'bevel' | 'round';
